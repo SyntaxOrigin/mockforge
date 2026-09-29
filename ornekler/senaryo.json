@@ -1,0 +1,32 @@
+{
+  "ad": "demo-senaryo",
+  "gecikmeler": [
+    {
+      "yol": "/v1/yavas",
+      "yontem": "GET",
+      "gecikme_ms": 300
+    },
+    {
+      "yol": "/v1/urunler",
+      "gecikme_ms": 20,
+      "her": 4
+    }
+  ],
+  "hatalar": [
+    {
+      "yol": "/v1/patlar",
+      "yontem": "GET",
+      "durum_kodu": 503,
+      "govde": {
+        "hata": "planli_bakim",
+        "aciklama": "servis 10 dakika bakimda"
+      }
+    },
+    {
+      "yol": "/v1/kullanicilar",
+      "yontem": "POST",
+      "durum_kodu": 429,
+      "her": 3
+    }
+  ]
+}

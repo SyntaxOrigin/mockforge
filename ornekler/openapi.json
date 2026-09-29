@@ -1,0 +1,279 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Ornek Kullanici API",
+    "version": "1.4.2",
+    "description": "MockForge ornek semasi. Durul kayit/giris/silme akisi ve cesitli veri tiplerini icerir. Bu MVP yerel $ref referanslarini cozmez; tum semalar gomuludur."
+  },
+  "paths": {
+    "/v1/kullanicilar": {
+      "get": {
+        "operationId": "kullanicilariListele",
+        "summary": "Kullanicilari listeler",
+        "responses": {
+          "200": {
+            "description": "Kullanicilari listesi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 4,
+                  "items": {
+                    "type": "object",
+                    "required": ["id", "eposta", "ad", "aktif", "olusturulma_tarihi"],
+                    "properties": {
+                      "id": { "type": "string", "minLength": 4, "maxLength": 20 },
+                      "eposta": { "type": "string", "format": "email" },
+                      "ad": { "type": "string", "minLength": 2, "maxLength": 40 },
+                      "yas": { "type": "integer", "format": "int32", "minimum": 18, "maximum": 99 },
+                      "aktif": { "type": "boolean" },
+                      "rol": { "type": "string", "enum": ["yonetici", "editor", "okuyucu"] },
+                      "adres": {
+                        "type": "object",
+                        "required": ["sehir"],
+                        "properties": {
+                          "sehir": { "type": "string", "minLength": 3, "maxLength": 20 },
+                          "posta_kodu": { "type": "string", "minLength": 5, "maxLength": 5 },
+                          "ulke_kodu": { "type": "string", "minLength": 2, "maxLength": 2 }
+                        }
+                      },
+                      "etiketler": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 3,
+                        "items": { "type": "string", "enum": ["deneme", "yeni", "vip"] }
+                      },
+                      "olusturulma_tarihi": { "type": "string", "format": "date-time" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "kullaniciKaydet",
+        "x-mockforge-adim": "kayit",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["eposta", "ad"],
+                "properties": {
+                  "eposta": { "type": "string", "format": "email" },
+                  "ad": { "type": "string", "minLength": 2, "maxLength": 40 },
+                  "parola": { "type": "string", "minLength": 8, "maxLength": 64 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Kayit olusturuldu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["id", "eposta", "olusturulma_tarihi"],
+                  "properties": {
+                    "id": { "type": "string", "minLength": 4, "maxLength": 20 },
+                    "eposta": { "type": "string", "format": "email" },
+                    "ad": { "type": "string", "minLength": 2, "maxLength": 40 },
+                    "olusturulma_tarihi": { "type": "string", "format": "date-time" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/kullanicilar/{id}": {
+      "parameters": [
+        { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+      ],
+      "get": {
+        "operationId": "kullaniciGetir",
+        "x-mockforge-adim": "okuma",
+        "responses": {
+          "200": {
+            "description": "Tekil kullanici",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["id", "eposta"],
+                  "properties": {
+                    "id": { "type": "string", "minLength": 4, "maxLength": 20 },
+                    "eposta": { "type": "string", "format": "email" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "kullaniciSil",
+        "x-mockforge-adim": "silme",
+        "responses": { "204": { "description": "Kullanici silindi" } }
+      }
+    },
+    "/v1/oturum": {
+      "post": {
+        "operationId": "oturumAc",
+        "x-mockforge-adim": "giris",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["eposta", "parola"],
+                "properties": {
+                  "eposta": { "type": "string", "format": "email" },
+                  "parola": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Oturum acildi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["token", "eposta", "gecerlilik_saniye"],
+                  "properties": {
+                    "token": { "type": "string", "minLength": 8, "maxLength": 64 },
+                    "eposta": { "type": "string", "format": "email" },
+                    "gecerlilik_saniye": { "type": "integer", "minimum": 60, "maximum": 86400 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/urunler": {
+      "get": {
+        "operationId": "urunleriListele",
+        "parameters": [
+          {
+            "name": "kategori",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["kirtasiye", "elektronik", "giysi"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Urun listesi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 3,
+                  "items": {
+                    "type": "object",
+                    "required": ["id", "ad", "fiyat", "stokta"],
+                    "properties": {
+                      "id": { "type": "string", "format": "uuid" },
+                      "ad": { "type": "string", "minLength": 3, "maxLength": 30 },
+                      "fiyat": { "type": "number", "format": "double", "minimum": 1, "maximum": 9999 },
+                      "stokta": { "type": "integer", "minimum": 0, "maximum": 500 },
+                      "etiketler": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 2,
+                        "items": { "type": "string", "minLength": 2, "maxLength": 12 }
+                      },
+                      "gorsel_url": { "type": "string", "format": "uri" },
+                      "satis_basarili": { "type": "boolean" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/saglik": {
+      "get": {
+        "operationId": "saglikKontrol",
+        "responses": {
+          "200": {
+            "description": "Servis saglik durumu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["durum", "zaman"],
+                  "properties": {
+                    "durum": { "type": "string", "enum": ["ok", "yavas", "bakimda"] },
+                    "zaman": { "type": "string", "format": "date-time" },
+                    "surum": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/yavas": {
+      "get": {
+        "operationId": "yavasUcl",
+        "responses": {
+          "200": {
+            "description": "Gecikmeli yanit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["durum", "zaman"],
+                  "properties": {
+                    "durum": { "type": "string", "enum": ["ok", "yavas", "bakimda"] },
+                    "zaman": { "type": "string", "format": "date-time" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/patlar": {
+      "get": {
+        "operationId": "hataliUcl",
+        "responses": {
+          "200": {
+            "description": "Normalde basarili yanit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["durum", "zaman"],
+                  "properties": {
+                    "durum": { "type": "string", "enum": ["ok", "yavas", "bakimda"] },
+                    "zaman": { "type": "string", "format": "date-time" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

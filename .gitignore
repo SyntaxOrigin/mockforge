@@ -1,0 +1,13 @@
+/target/
+.env
+*.log
+
+# Editör ve araç dosyaları (taşınabilirlik ilkesi: yalnızca kaynak depoda durur).
+.idea/
+.vscode/
+*.swp
+*.tmp
+
+# Onceki, tamamlanmamis bir calisma denemesinin dosyalari (bkz. rapor).
+# Repoya girmez; silinmez, yalnizca bu klasorde korunur.
+/Onceki-Calisma/

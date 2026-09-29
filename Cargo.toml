@@ -1,0 +1,29 @@
+[package]
+name = "mockforge"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.74"
+license = "MIT"
+description = "OpenAPI 3.x şemasından deterministik sahte API sunucusu üreten komut satırı aracı."
+repository = "https://github.com/SyntaxOrigin/mockforge"
+readme = "README.md"
+keywords = ["openapi", "mock", "http", "cli", "testing"]
+categories = ["command-line-utilities", "development-tools::testing"]
+
+[dependencies]
+# serde: OpenAPI belgesinin `paths`, `responses`, `properties` gibi iç içe yapılarını
+# türetilmiş veri yapılarına bağlamak için gerekli (src/sema/mod.rs).
+serde = { version = "1", features = ["derive"] }
+# serde_json: şema dosyasını okumak, gövde üretimini ve kontrol ucu yanıtlarını
+# JSON olarak yazmak için kullanılıyor (src/sema/okuyucu.rs, src/uretici.rs).
+serde_json = "1"
+# clap: `serve` alt komutu ve bayraklar için türetilmiş komut satırı arayüzü
+# (src/main.rs). Yalnızca argüman ayrıştırma içindir, ağ katmanı std'den gelir.
+clap = { version = "4", features = ["derive"] }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+strip = "debuginfo"
