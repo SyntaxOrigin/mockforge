@@ -453,6 +453,18 @@ Neden: ağ kısıtı ya da çok sayıda eşzamanlı test sunucusu.
 - **Ortak sözleşme**: `%USERPROFILE%\Desktop\Projeler\WORKER_CONTRACT.md` ve
   `MANIFEST.md` kart 12 — yerel dosyalardır.
 
+## Üretim Atfı
+
+Bu depo **OpenCode** ajanı tarafından, **`space-bunny-free`** modeli
+(`opencode/space-bunny-free`) kullanılarak üretilmiştir.
+
+- **Arac:** OpenCode
+- **Model:** `opencode/space-bunny-free` (Space Bunny Free)
+- **Tür:** Rust, `cargo build` / `cargo test` ile üretilmiş ve doğrulanmıştır.
+
+Kaynak kod, testler ve dokümantasyon bu model tarafından yazılmıştır. İnsan
+katkısı: gereksinim tanımı, kabul ölçütleri ve son kontroller.
+
 ## Lisans
 
 MIT. Tam metin `LICENSE.txt` dosyasındadır.
